@@ -23,16 +23,16 @@
                               [u (string-append g (uri-encode target))]
                               [rx #rx"(?<=<h3 class=\"r\">).*?(?=</h3>)"])
                          (regexp-match* rx (get-pure-port (string->url u))))])
-              (define zp (new horizontal-panel%
+              (let ([zp (new horizontal-panel%
                               [parent group-box-panel]
-                              [alignment '(left center)]))
-              (make-object button% "Open" zp (λ (btn evt)
+                              [alignment '(left center)])])
+                (make-object button% "Open" zp (λ (btn evt)
                    (send-url (regexp-replace* #px"url[?]q=" 
                    (bytes->string/utf-8 (car (let ([rx #rx"(?<= href=\"/).*?(?=\" ?>)"])
                    (regexp-match rx str)))) ""))))
-              (make-object message% (regexp-replace* #px"</?b>" 
+                (make-object message% (regexp-replace* #px"</?b>" 
                    (bytes->string/utf-8 (car (let ([rx #rx"(?<=\">).*?(?=</a>)"])
-                   (regexp-match rx str)))) "") zp)))]
+                   (regexp-match rx str)))) "") zp))))]
        
        [duck-search (λ (target)
           (for ([ch (send group-box-panel get-children)])
@@ -43,16 +43,16 @@
                        (regexp-match* rx (get-pure-port (string->url u))))]
                 [i (in-naturals 1)]
                 #:when (< i 14)) ; Just to show as much as Google
-            (define zp (new horizontal-panel%
+            (let ([zp (new horizontal-panel%
                             [parent group-box-panel]
-                            [alignment '(left center)]))
-            (make-object button% "Open" zp (λ (btn evt)
+                            [alignment '(left center)])])
+               (make-object button% "Open" zp (λ (btn evt)
                    (send-url (bytes->string/utf-8 
                    (car (let ([rx #rx"(?<=href=\").*?(?=\">)"])
                    (regexp-match rx str)))))))
-            (make-object message% (regexp-replace* #px"</?b>" 
+               (make-object message% (regexp-replace* #px"</?b>" 
                    (bytes->string/utf-8 (car (let ([rx #rx"(?<=\">).*"])
-                   (regexp-match rx str))))"") zp)))]
+                   (regexp-match rx str))))"") zp))))]
 
        [p (new horizontal-panel%
                [parent f]
