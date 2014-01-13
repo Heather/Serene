@@ -20,4 +20,7 @@ script:
  - /usr/racket/bin/raco exe -v ss.rkt
 
 after_script:
+ - ./ss --help
+ - ./ss --version
  - ./ss Hello cruel world
+ - ./ss --duck Hello cruel world

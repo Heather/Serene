@@ -29,5 +29,21 @@
                    (bytes->string/utf-8 (car (let ([rx #rx"(?<=\">).*?(?=</a>)"])
                    (regexp-match rx str)))) ""))))])
   
+  (define no-v? (make-parameter #true))
+  (define google-mode? (make-parameter #true))
+  
   (command-line
-   #:args all (google-search (string-join all))))
+   #:once-each
+   [("-v" "--version") "Display search serene version"
+                    (set! no-v? #false)]
+   #:once-any
+   [("-d" "--duck") "Duck Duck Go"
+                    (set! google-mode? #false)]
+   [("-g" "--google") "Google"
+                    (set! google-mode? #true)]
+   #:args all (if no-v?
+               (let ([A (string-join all)])
+                (if google-mode?
+                    (google-search A)
+                    (duck-search A)))
+                (displayln "Search Servene v.1.4"))))
