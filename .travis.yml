@@ -18,3 +18,6 @@ before_script:
 script:
  - /usr/racket/bin/raco make -v Serene.rkt
  - /usr/racket/bin/raco make -v ss.rkt
+
+after_script:
+ - ss Hello cruel world
