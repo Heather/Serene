@@ -10,28 +10,23 @@ Currently
  - Can search on duckduckgo
 
 ``` racket
-(define (let-me-google-that-for-you str)
-  (let* ([g "https://www.google.com/search?q="]
-         [u (string-append g (uri-encode str))]
-         [rx #rx"(?<=<h3 class=\"r\">).*?(?=</h3>)"])
-    (regexp-match* rx (get-pure-port (string->url u)))))
-
-(define (postparse strs)
+[duck-search (? (target)
   (for ([ch (send group-box-panel get-children)])
     (send group-box-panel delete-child ch))
-  (for ([str strs])
-    (define zp (new horizontal-panel%
-               [parent group-box-panel]
-               [alignment '(left center)]))
-    (define link
-      (regexp-replace* #px"url[?]q=" 
-      (bytes->string/utf-8 (car (let ([rx #rx"(?<= href=\"/).*?(?=\">)"])
-                         (regexp-match rx str)))) ""))
-    (define lbl
-      (regexp-replace* #px"</?b>" 
-        (bytes->string/utf-8 (car (let ([rx #rx"(?<=\">).*?(?=</a>)"])
-                         (regexp-match rx str)))) ""))
-    (make-object button% "Open" zp (? (btn evt)
-             (send-url link) #|(message-box "link" link)|# ))
-    (make-object message% lbl zp)))
+  (for ([str (let* ([g "https://duckduckgo.com/html/?q="]
+                    [u (string-append g (uri-encode target))]
+                    [rx #rx"(?<=<a rel=\"nofollow\" class=\"large\").*?(?=</a>)"])
+               (regexp-match* rx (get-pure-port (string->url u))))]
+        [i (in-naturals 1)]
+        #:when (< i 14)) ; Just to show as much as Google
+    (let ([zp (new horizontal-panel%
+                    [parent group-box-panel]
+                    [alignment '(left center)])])
+       (make-object button% "Open" zp (? (btn evt)
+           (send-url (bytes->string/utf-8 
+           (car (let ([rx #rx"(?<=href=\").*?(?=\">)"])
+           (regexp-match rx str)))))))
+       (make-object message% (regexp-replace* #px"</?b>" 
+           (bytes->string/utf-8 (car (let ([rx #rx"(?<=\">).*"])
+           (regexp-match rx str))))"") zp))))]
 ```
