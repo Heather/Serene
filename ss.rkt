@@ -1,5 +1,5 @@
 #lang racket
-(require net/url net/uri-codec net/sendurl)
+(require net/url net/uri-codec net/sendurl racket/cmdline)
 
 (let* ([duck-search (λ (target)
           (for ([str (let* ([g "https://duckduckgo.com/html/?q="]
@@ -28,5 +28,6 @@
                 (displayln (regexp-replace* #px"</?b>" 
                    (bytes->string/utf-8 (car (let ([rx #rx"(?<=\">).*?(?=</a>)"])
                    (regexp-match rx str)))) ""))))])
-
-  (google-search (string-join (vector->list (current-command-line-arguments)))))
+  
+  (command-line
+   #:args all (google-search (string-join all))))
