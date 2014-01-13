@@ -14,8 +14,8 @@ Currently
 Applications
 ------------
 
- - ss is command line util which can be really cool one day it will become more usable (currently only with links)
- - Serene is gui applications with search bar and dynamic buttons (currently) to open links in default browser
+ - <b>ss</b> is command line util which can be really cool one day it will become more usable (currently only with links)
+ - <b>Serene</b> is gui applications with search bar and dynamic buttons (currently) to open links in default browser
 
 
 ``` racket
