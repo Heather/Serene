@@ -16,4 +16,4 @@ install:
 before_script:
 
 script:
- - /usr/racket/bin/raco make Serene.rkt
+ - /usr/racket/bin/raco make -v Serene.rkt
