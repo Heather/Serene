@@ -3,28 +3,28 @@
 #
 
 RACO=raco
-RCFLAGS=--gui -v
+SSFLAGS=-v
+SERENEFLAGS=--gui -v
 SRCDIR=.
+SSRC=ss.rkt
 SRC=Serene.rkt
 INSTALL   ?= install
 MKDIR     ?= $(INSTALL) -d
 BINDIR    ?= $(PREFIX)/bin
 DESTDIR   ?=
 
-r:	$(SRCDIR)
-	cd $^ && $(RACO) exe ${RCFLAGS} $(SRC)
+Serene:	$(SRCDIR)
+	cd $^ && $(RACO) exe ${SERENEFLAGS} $(SRC)
+    
+ss:	$(SRCDIR)
+	cd $^ && $(RACO) exe ${SSFLAGS} $(SSRC)
 
 .PHONY: clean rebuild
 
-rebuild: clean | r
+rebuild: clean | Serene
 
 clean:
-	@echo " --- Clean binaries --- "
-	rm -f Serene Serene.exe
-
-#@echo " --- Clean temp files --- "
-#find . -name '*~' -delete;
-#find . -name '#*#' -delete;
+	rm -f Serene Serene.exe ss ss.exe
 
 install:
 	$(MKDIR) $(DESTDIR)$(BINDIR)

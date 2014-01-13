@@ -46,7 +46,6 @@
               (let ([zp (new horizontal-panel%
                               [parent group-box-panel]
                               [alignment '(left center)])])
-                (displayln str)
                 (make-object button% "Open" zp (λ (btn evt)
                    (send-url (regexp-replace* #px"url[?]q=" 
                    (bytes->string/utf-8 (car (let ([rx #rx"(?<= href=\"/).*?(?=&amp)"])
