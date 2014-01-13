@@ -10,6 +10,7 @@ Currently
 
  - Can search on google.com
  - Can search on duckduckgo
+ - Automatically avoid advertising / promoted results
 
 Applications
 ------------
@@ -27,7 +28,7 @@ Applications
                     [rx #rx"(?<=<a rel=\"nofollow\" class=\"large\").*?(?=</a>)"])
                (regexp-match* rx (get-pure-port (string->url u))))]
         [i (in-naturals 1)]
-        #:when (< i 14)) ; Just to show as much as Google
+        #:when (and (< i 15) (> i 1))) #| SKIP PROMOTED |#
     (let ([zp (new horizontal-panel%
                     [parent group-box-panel]
                     [alignment '(left center)])])

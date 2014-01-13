@@ -7,7 +7,7 @@
                             [rx #rx"(?<=<a rel=\"nofollow\" class=\"large\").*?(?=</a>)"])
                        (regexp-match* rx (get-pure-port (string->url u))))]
                 [i (in-naturals 1)]
-                #:when (< i 14)) ; Just to show as much as Google
+                #:when (and (< i 15) (> i 1)))
                (display (bytes->string/utf-8 
                    (car (let ([rx #rx"(?<=href=\").*?(?=\">)"])
                    (regexp-match rx str)))))
@@ -46,4 +46,4 @@
                 (if google-mode?
                     (google-search A)
                     (duck-search A)))
-                (displayln "Search Servene v.1.4"))))
+                (displayln "Search Servene v.1.5"))))

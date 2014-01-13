@@ -4,7 +4,7 @@
 (let* ([f (new (class frame% (super-new)
                  (define/augment (on-close)
                    (displayln "Exiting...")))
-               [label "Search Serene 1.4"]
+               [label "Search Serene 1.5"]
                [min-width 350])]
        [lmgfy (new text-field%
                    [label "Search"]
@@ -24,7 +24,7 @@
                             [rx #rx"(?<=<a rel=\"nofollow\" class=\"large\").*?(?=</a>)"])
                        (regexp-match* rx (get-pure-port (string->url u))))]
                 [i (in-naturals 1)]
-                #:when (< i 14)) ; Just to show as much as Google
+                #:when (and (< i 15) (> i 1)))
             (let ([zp (new horizontal-panel%
                             [parent group-box-panel]
                             [alignment '(left center)])])
