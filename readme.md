@@ -1,6 +1,8 @@
 Search Serene
 -------------
 
+[![Build Status](https://travis-ci.org/Heather/Serene.png?branch=master)](https://travis-ci.org/Heather/Serene)
+
 Simple stupid search application; my first scheme (racket) experiment based on examples >_<
 
 Currently
