@@ -24,6 +24,11 @@ Currently
  - Save search result in temporary file
  - Open (with -o) result by number (`ss racket & ss -o 1`)
 
+TODO
+----
+
+ - Save more result and use paging somehow
+ 
 ``` racket
 [duck-search (? (target)
   (for ([ch (send group-box-panel get-children)])
