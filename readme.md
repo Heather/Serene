@@ -5,19 +5,24 @@ Search Serene
 
 Simple stupid search application; my first scheme (racket) experiment based on examples >_<
 
-Currently
-=========
-
- - Can search on google.com
- - Can search on duckduckgo
- - Automatically avoid advertising / promoted results
-
 Applications
 ------------
 
- - <b>ss</b> is command line util which can be really cool one day it will become more usable (currently only with links)
+ - <b>ss</b> is command line util which can be really cool one day it will become more usable
  - <b>Serene</b> is gui applications with search bar and dynamic buttons (currently) to open links in default browser
 
+Currently
+=========
+
+ - Can search on google.com (`-g | --google` on ss [default])
+ - Can search on duckduckgo (`-d | --doge` on ss)
+ - Automatically avoid advertising / promoted results
+
+<b>ss</b> (command line util)
+
+ - Numbering search result (and sure display it)
+ - Save search result in temporary file
+ - Open (with -o) result by number (`ss racket & ss -o 1`)
 
 ``` racket
 [duck-search (? (target)

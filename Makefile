@@ -24,7 +24,7 @@ ss:	$(SRCDIR)
 rebuild: clean | Serene
 
 clean:
-	rm -f Serene Serene.exe ss ss.exe
+	rm -f Serene Serene.exe ss ss.exe .ss
 
 install:
 	$(MKDIR) $(DESTDIR)$(BINDIR)
