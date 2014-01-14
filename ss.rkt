@@ -31,19 +31,24 @@
   
   (define no-v? (make-parameter #true))
   (define google-mode? (make-parameter #true))
+  (define openlink "")
   
   (command-line
    #:once-each
    [("-v" "--version") "Display search serene version"
                     (set! no-v? #false)]
+   [("-o" "--open") string "Open an link"
+                    (set! openlink string)]
    #:once-any
    [("-d" "--duck") "Duck Duck Go"
                     (set! google-mode? #false)]
    [("-g" "--google") "Google"
                     (set! google-mode? #true)]
    #:args all (if no-v?
-               (let ([A (string-join all)])
-                (if google-mode?
-                    (google-search A)
-                    (duck-search A)))
-                (displayln "Search Servene v.1.5"))))
+                  (if (string=? openlink "")
+                      (let ([A (string-join all)])
+                        (if google-mode?
+                            (google-search A)
+                            (duck-search A)))
+                      (send-url openlink))
+                  (displayln "Search Servene v.1.5"))))
