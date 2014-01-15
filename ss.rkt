@@ -14,7 +14,7 @@
    (list-ref (file->lines ".ss" #:mode 'text)
              (- v 1))))
 
-(let* ([duck-search (λ (target) (wipe)
+(let* ([duck-search (λ (target)
           (for ([str (let* ([g "https://duckduckgo.com/html/?q="]
                             [u (string-append g (uri-encode target))]
                             [rx #rx"(?<=<a rel=\"nofollow\" class=\"large\").*?(?=</a>)"])
@@ -33,7 +33,7 @@
                    (bytes->string/utf-8 (car (let ([rx #rx"(?<=\">).*"])
                    (regexp-match rx str))))""))))]
        
-       [google-search (λ (target) (wipe)
+       [google-search (λ (target)
             (for ([str (let* ([g "https://www.google.com/search?q="]
                               [u (string-append g (uri-encode target))]
                               [rx #rx"(?<=<h3 class=\"r\">).*?(?=</h3>)"])
@@ -68,7 +68,7 @@
                     (set! google-mode? #true)]
    #:args all (if no-v?
                   (if (string=? openlink "")
-                      (let ([A (string-join all)])
+                      (let ([A (string-join all)]) (wipe)
                         (if google-mode?
                             (google-search A)
                             (duck-search A)))
