@@ -41,3 +41,8 @@ TODO
                         (bytes->string/utf-8 (car (let ([rx #rx"(?<=\">).*"])
                                 (regexp-match rx str))))"")))]
 ```
+
+Does it work?
+=============
+
+foshizzlemanizzle
