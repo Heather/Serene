@@ -3,12 +3,12 @@
 
 (define (wipe)
   (display-to-file "" ".ss"
-                 #:mode 'text
-                 #:exists 'truncate/replace))
+                   #:mode 'text
+                   #:exists 'truncate/replace))
 (define (save v)
   (display-to-file (string-append v "\n") ".ss"
-                 #:mode 'text
-                 #:exists 'append))
+                   #:mode 'text
+                   #:exists 'append))
 (define (open v)
   (send-url
    (list-ref (file->lines ".ss" #:mode 'text)
@@ -30,7 +30,7 @@
 
 (let* ([duck-search (serene "https://duckduckgo.com/html/?q="
                             #rx"(?<=<a rel=\"nofollow\" class=\"large\").*?(?=</a>)"
-                            1 15
+                            1 11
                             (λ (str) (bytes->string/utf-8 
                                       (car (let ([rx #rx"(?<=href=\").*?(?=\">)"])
                                              (regexp-match rx str)))))
@@ -40,13 +40,13 @@
        
        [google-search (serene "https://www.google.com/search?q="
                               #rx"(?<=<h3 class=\"r\">).*?(?=</h3>)"
-                              0 10
+                              0 11
                               (λ (str) (regexp-replace* #px"url[?]q=" 
-                   (bytes->string/utf-8 (car (let ([rx #rx"(?<= href=\"/).*?(?=&amp)"])
-                   (regexp-match rx str)))) ""))
+                                                        (bytes->string/utf-8 (car (let ([rx #rx"(?<= href=\"/).*?(?=&amp)"])
+                                                                                    (regexp-match rx str)))) ""))
                               (λ (str) (regexp-replace* #px"</?b>" 
-                   (bytes->string/utf-8 (car (let ([rx #rx"(?<=\">).*?(?=</a>)"])
-                   (regexp-match rx str)))) "")))])
+                                                        (bytes->string/utf-8 (car (let ([rx #rx"(?<=\">).*?(?=</a>)"])
+                                                                                    (regexp-match rx str)))) "")))])
   
   (define no-v? (make-parameter #true))
   (define google-mode? (make-parameter #true))
@@ -55,14 +55,14 @@
   (command-line
    #:once-each
    [("-v" "--version") "Display search serene version"
-                    (set! no-v? #false)]
+                       (set! no-v? #false)]
    [("-o" "--open") string "Open an link"
                     (set! openlink string)]
    #:once-any
    [("-d" "--duck") "Duck Duck Go"
                     (set! google-mode? #false)]
    [("-g" "--google") "Google"
-                    (set! google-mode? #true)]
+                      (set! google-mode? #true)]
    #:args all (if no-v?
                   (if (string=? openlink "")
                       (let ([A (string-join all)]) (wipe)
