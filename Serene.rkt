@@ -4,7 +4,7 @@
 (let* ([f (new (class frame% (super-new)
                  (define/augment (on-close)
                    (displayln "Exiting...")))
-               [label "Search Serene 1.5"]
+               [label "Search Serene 1.7"]
                [min-width 350])]
        [lmgfy (new text-field%
                    [label "Search"]
@@ -16,44 +16,38 @@
                              [min-width 100]
                              [min-height 300])]
        
-       [duck-search (λ (target)
-          (for ([ch (send group-box-panel get-children)])
-            (send group-box-panel delete-child ch))
-          (for ([str (let* ([g "https://duckduckgo.com/html/?q="]
-                            [u (string-append g (uri-encode target))]
-                            [rx #rx"(?<=<a rel=\"nofollow\" class=\"large\").*?(?=</a>)"])
-                       (regexp-match* rx (get-pure-port (string->url u))))]
-                [i (in-naturals 1)]
-                #:when (and (< i 15) (> i 1)))
-            (let ([zp (new horizontal-panel%
-                            [parent group-box-panel]
-                            [alignment '(left center)])])
-               (make-object button% "Open" zp (λ (btn evt)
-                   (send-url (bytes->string/utf-8 
-                   (car (let ([rx #rx"(?<=href=\").*?(?=\">)"])
-                   (regexp-match rx str)))))))
-               (make-object message% (regexp-replace* #px"</?b>" 
-                   (bytes->string/utf-8 (car (let ([rx #rx"(?<=\">).*"])
-                   (regexp-match rx str))))"") zp))))]
+       [serene (λ (base baserx i0 i1 getHttp getDescription)
+                 (λ (target)
+                   (for ([str (let ([u (string-append base (uri-encode target))])
+                                (regexp-match* baserx (get-pure-port (string->url u))))]
+                         [i (in-naturals 1)]
+                         #:when (and (< i i1) (> i i0)))
+                     (let ([zp (new horizontal-panel%
+                                    [parent group-box-panel]
+                                    [alignment '(left center)])])
+                       (make-object button% "Open" zp (λ (btn evt) (send-url (getHttp str))))
+                       (make-object message% (getDescription str) zp)))))]
        
-       [google-search (λ (target)
-            (for ([ch (send group-box-panel get-children)])
-              (send group-box-panel delete-child ch))
-            (for ([str (let* ([g "https://www.google.com/search?q="]
-                              [u (string-append g (uri-encode target))]
-                              [rx #rx"(?<=<h3 class=\"r\">).*?(?=</h3>)"])
-                         (regexp-match* rx (get-pure-port (string->url u))))])
-              (let ([zp (new horizontal-panel%
-                              [parent group-box-panel]
-                              [alignment '(left center)])])
-                (make-object button% "Open" zp (λ (btn evt)
-                   (send-url (regexp-replace* #px"url[?]q=" 
-                   (bytes->string/utf-8 (car (let ([rx #rx"(?<= href=\"/).*?(?=&amp)"])
-                   (regexp-match rx str)))) ""))))
-                (make-object message% (regexp-replace* #px"</?b>" 
-                   (bytes->string/utf-8 (car (let ([rx #rx"(?<=\">).*?(?=</a>)"])
-                   (regexp-match rx str)))) "") zp))))]
-
+       [duck-search (serene "https://duckduckgo.com/html/?q="
+                            #rx"(?<=<a rel=\"nofollow\" class=\"large\").*?(?=</a>)"
+                            1 11
+                            (λ (str) (bytes->string/utf-8 
+                                      (car (let ([rx #rx"(?<=href=\").*?(?=\">)"])
+                                             (regexp-match rx str)))))
+                            (λ (str) (regexp-replace* #px"</?b>" 
+                                                      (bytes->string/utf-8 (car (let ([rx #rx"(?<=\">).*"])
+                                                                                  (regexp-match rx str))))"")))]
+       
+       [google-search (serene "https://www.google.com/search?q="
+                              #rx"(?<=<h3 class=\"r\">).*?(?=</h3>)"
+                              0 11
+                              (λ (str) (regexp-replace* #px"url[?]q=" 
+                                                        (bytes->string/utf-8 (car (let ([rx #rx"(?<= href=\"/).*?(?=&amp)"])
+                                                                                    (regexp-match rx str)))) ""))
+                              (λ (str) (regexp-replace* #px"</?b>" 
+                                                        (bytes->string/utf-8 (car (let ([rx #rx"(?<=\">).*?(?=</a>)"])
+                                                                                    (regexp-match rx str)))) "")))]
+       
        [p (new horizontal-panel%
                [parent f]
                [alignment '(right top)])]
