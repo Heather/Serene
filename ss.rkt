@@ -14,42 +14,39 @@
    (list-ref (file->lines ".ss" #:mode 'text)
              (- v 1))))
 
-(let* ([duck-search (λ (target)
-          (for ([str (let* ([g "https://duckduckgo.com/html/?q="]
-                            [u (string-append g (uri-encode target))]
-                            [rx #rx"(?<=<a rel=\"nofollow\" class=\"large\").*?(?=</a>)"])
-                       (regexp-match* rx (get-pure-port (string->url u))))]
-            [i (in-naturals 1)]
-            #:when (and (< i 15) (> i 1)))
-            (display (- i 1))
-            (display " : ")
-            (let ([http (bytes->string/utf-8 
-                   (car (let ([rx #rx"(?<=href=\").*?(?=\">)"])
-                   (regexp-match rx str))))])
-               (display http)
-               (save http))
-               (display " > ")
-               (displayln (regexp-replace* #px"</?b>" 
-                   (bytes->string/utf-8 (car (let ([rx #rx"(?<=\">).*"])
-                   (regexp-match rx str))))""))))]
+(define (serene base baserx i0 i1 getHttp getDescription)
+  (λ (target)
+    (for ([str (let ([u (string-append base (uri-encode target))])
+                 (regexp-match* baserx (get-pure-port (string->url u))))]
+          [i (in-naturals 1)]
+          #:when (and (< i i1) (> i i0)))
+      (display (- i i0))
+      (display " : ")
+      (let ([http (getHttp str)])
+        (display http)
+        (save http))
+      (display " > ")
+      (displayln  (getDescription str)))))
+
+(let* ([duck-search (serene "https://duckduckgo.com/html/?q="
+                            #rx"(?<=<a rel=\"nofollow\" class=\"large\").*?(?=</a>)"
+                            1 15
+                            (λ (str) (bytes->string/utf-8 
+                                      (car (let ([rx #rx"(?<=href=\").*?(?=\">)"])
+                                             (regexp-match rx str)))))
+                            (λ (str) (regexp-replace* #px"</?b>" 
+                                                      (bytes->string/utf-8 (car (let ([rx #rx"(?<=\">).*"])
+                                                                                  (regexp-match rx str))))"")))]
        
-       [google-search (λ (target)
-            (for ([str (let* ([g "https://www.google.com/search?q="]
-                              [u (string-append g (uri-encode target))]
-                              [rx #rx"(?<=<h3 class=\"r\">).*?(?=</h3>)"])
-                         (regexp-match* rx (get-pure-port (string->url u))))]
-              [i (in-naturals 1)])
-              (display i)
-              (display " : ")
-              (let ([http (regexp-replace* #px"url[?]q=" 
+       [google-search (serene "https://www.google.com/search?q="
+                              #rx"(?<=<h3 class=\"r\">).*?(?=</h3>)"
+                              0 10
+                              (λ (str) (regexp-replace* #px"url[?]q=" 
                    (bytes->string/utf-8 (car (let ([rx #rx"(?<= href=\"/).*?(?=&amp)"])
-                   (regexp-match rx str)))) "")])
-                (display http)
-                (save http))
-                (display " > ")
-                (displayln (regexp-replace* #px"</?b>" 
+                   (regexp-match rx str)))) ""))
+                              (λ (str) (regexp-replace* #px"</?b>" 
                    (bytes->string/utf-8 (car (let ([rx #rx"(?<=\">).*?(?=</a>)"])
-                   (regexp-match rx str)))) ""))))])
+                   (regexp-match rx str)))) "")))])
   
   (define no-v? (make-parameter #true))
   (define google-mode? (make-parameter #true))
@@ -76,4 +73,4 @@
                           (open (string->number openlink))
                           (send-url openlink)
                           ))
-                  (displayln "Search Servene v.1.6"))))
+                  (displayln "Search Servene v.1.7"))))
