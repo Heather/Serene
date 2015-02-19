@@ -29,20 +29,4 @@ TODO
 
  - Save more result and use paging somehow
  
-``` racket
-[duck-search 
-    (serene "https://duckduckgo.com/html/?q="
-            #rx"(?<=<a rel=\"nofollow\" class=\"large\").*?(?=</a>)"
-            1 11
-            (? (str) (bytes->string/utf-8 
-                      (car (let ([rx #rx"(?<=href=\").*?(?=\">)"])
-                             (regexp-match rx str)))))
-            (? (str) (regexp-replace* #px"</?b>" 
-                        (bytes->string/utf-8 (car (let ([rx #rx"(?<=\">).*"])
-                                (regexp-match rx str))))"")))]
-```
-
-Does it work?
-=============
-
-foshizzlemanizzle
+![](http://fc03.deviantart.net/fs71/f/2015/016/5/e/render__anime_girl__73_by_kiyoshi_sempai-d8e3no3.png)
